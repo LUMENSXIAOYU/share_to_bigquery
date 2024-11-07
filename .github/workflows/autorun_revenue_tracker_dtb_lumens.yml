@@ -43,6 +43,6 @@ jobs:
             git push
           fi
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ vars.GOOGLE_APPLICATION_CREDENTIALS }}
           # You must set the GitHub token to authenticate the push command
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
