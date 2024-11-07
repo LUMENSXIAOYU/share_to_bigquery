@@ -6,22 +6,20 @@ import tempfile
 from office365.sharepoint.client_context import ClientContext
 from office365.runtime.auth.user_credential import UserCredential
 from datetime import datetime
-from google.oauth2 import service_account
 
-# 将 Google Cloud 凭证环境变量写入临时文件
+# 从环境变量中获取 Google Cloud 凭证内容并写入临时文件
 credentials_info = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 if not credentials_info:
     raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set or is empty.")
 
-# 创建临时文件来存储 Google Cloud 凭证
-with tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.json') as temp_credentials_file:
-    temp_credentials_file.write(credentials_info)
-    temp_credentials_path = temp_credentials_file.name
+# 将 JSON 凭证内容写入临时文件
+with tempfile.NamedTemporaryFile(delete=False, mode='w', suffix='.json') as temp_file:
+    temp_file.write(credentials_info)
+    temp_credentials_path = temp_file.name
 
-# 使用临时凭证文件创建 BigQuery 客户端
+# 使用临时文件创建 BigQuery 客户端
 try:
-    credentials = service_account.Credentials.from_service_account_file(temp_credentials_path)
-    client = bigquery.Client(credentials=credentials)
+    client = bigquery.Client.from_service_account_json(temp_credentials_path)
     print("[Ok] Google Cloud credentials loaded successfully.")
 finally:
     # 删除临时文件以确保安全
